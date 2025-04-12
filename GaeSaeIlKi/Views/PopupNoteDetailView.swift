@@ -26,7 +26,7 @@ struct PopupNoteDetailView: View {
             // Glassmorphism popup card
             VStack(alignment: .leading, spacing: 10) {
                 // Header
-                HStack(alignment: .top) {
+                HStack() {
                     Text("실패 일기")
                         .font(.headline)
                         .foregroundColor(.primary)
@@ -37,6 +37,7 @@ struct PopupNoteDetailView: View {
                     RoundedRectangle(cornerRadius: 2)
                         .fill(Color.secondary.opacity(0.4))
                         .frame(width: 40, height: 5)
+                        .padding(.bottom, 16)
                     
                     Spacer()
                     
@@ -79,7 +80,7 @@ struct PopupNoteDetailView: View {
                     }
                 }
                 .padding(.horizontal)
-                .padding(.top)
+                .padding(.top, 10)
                 
                 Divider()
                     .background(Color.white.opacity(0.7))

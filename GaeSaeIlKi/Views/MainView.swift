@@ -209,11 +209,13 @@ struct MainView: View {
                         .font(.headline)
                     
                     HStack {
-                        TextField("당신의 목표를 작성하세요.", text: $currentGoal)
+                        TextField("✏️ 당신의 목표를 작성하세요.", text: $currentGoal)
+                            .multilineTextAlignment(.center)
+                            .fontWeight(.black)
                             .padding()
                             .background(
                                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                    .fill(isTopTextFieldFocused ? .white : .white.opacity(0.7))
+                                    .fill(isTopTextFieldFocused ? .white : .white.opacity(0.5))
                                 )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
@@ -230,16 +232,11 @@ struct MainView: View {
                                     .symbolEffect(.bounce, value: !isTopTextFieldFocused||currentGoal.isEmpty)
                                     .font(.system(size: 18, weight: .semibold))
                                     .foregroundColor(!isTopTextFieldFocused||currentGoal.isEmpty ? .gray.opacity(0.2) : .gray)
-                                    .frame(width: 50, height: 50)
+                                    .frame(width: 55, height: 55)
                                     .background(
                                         Circle()
-                                            .fill(!isTopTextFieldFocused||currentGoal.isEmpty ? .white.opacity(0.2) : .white.opacity(0.9))
+                                            .fill(!isTopTextFieldFocused||currentGoal.isEmpty ? .white.opacity(0.2) : .white)
                                     )
-                                    .overlay(
-                                        Circle()
-                                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                                    )
-                                    .shadow(color: currentGoal.isEmpty ? .clear : Color.black.opacity(0.1), radius: 6, x: 0, y: 3)
                             }
                             .disabled(!isTopTextFieldFocused||currentGoal.isEmpty)
                         }
@@ -280,7 +277,7 @@ struct MainView: View {
                             .padding()
                             .background(
                                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                    .fill(isBottomTextFieldFocused ? .white : .white.opacity(0.7))
+                                    .fill(isBottomTextFieldFocused ? .white : .white.opacity(0.5))
                             )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
@@ -289,6 +286,7 @@ struct MainView: View {
                             .focused($isBottomTextFieldFocused)
                             .onSubmit {
                                 if !failureNote.isEmpty {
+                                    UserDefaults.standard.set(currentGoal, forKey: "currentGoal")
                                     addDogBird()
                                     isBottomTextFieldFocused = false
                                 }
@@ -296,6 +294,7 @@ struct MainView: View {
                         
                         VStack {
                             Button(action: {
+                                UserDefaults.standard.set(currentGoal, forKey: "currentGoal")
                                 addDogBird()
                                 isBottomTextFieldFocused = false
                             }) {
@@ -303,16 +302,11 @@ struct MainView: View {
                                     .symbolEffect(.bounce, value: failureNote.isEmpty || failureNote.count > 110)
                                     .font(.system(size: 22, weight: .semibold))
                                     .foregroundColor(failureNote.isEmpty || failureNote.count > 110 ? .gray.opacity(0.2) : .gray)
-                                    .frame(width: 50, height: 50)
+                                    .frame(width: 55, height: 55)
                                     .background(
                                         Circle()
-                                            .fill(failureNote.isEmpty || failureNote.count > 110 ? .white.opacity(0.2) : .white.opacity(0.9))
+                                            .fill(failureNote.isEmpty || failureNote.count > 110 ? .white.opacity(0.2) : .white)
                                     )
-                                    .overlay(
-                                        Circle()
-                                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                                    )
-                                    .shadow(color: failureNote.isEmpty || failureNote.count > 110 ? .clear : Color.black.opacity(0.1), radius: 6, x: 0, y: 3)
                             }
                             .disabled(failureNote.isEmpty || failureNote.count > 110)
                             
