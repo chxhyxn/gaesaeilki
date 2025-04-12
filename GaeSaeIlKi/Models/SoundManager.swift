@@ -13,14 +13,14 @@ class SoundManager: ObservableObject {
     private var timer: Timer?
     
     @Published var soundLevel: Float = 0.0
+    @Published var isMonitoring: Bool = false
     
     init() {
         setupAudioRecorder()
     }
     
     deinit {
-        timer?.invalidate()
-        audioRecorder?.stop()
+        stopMonitoring()
     }
     
     private func setupAudioRecorder() {
@@ -54,7 +54,6 @@ class SoundManager: ObservableObject {
             audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
             audioRecorder?.isMeteringEnabled = true
             audioRecorder?.prepareToRecord()
-            audioRecorder?.record()
             
             startMonitoring()
         } catch {
@@ -62,7 +61,16 @@ class SoundManager: ObservableObject {
         }
     }
     
+    func toggleMonitoring() {
+        if isMonitoring {
+            stopMonitoring()
+        } else {
+            startMonitoring()
+        }
+    }
+    
     private func startMonitoring() {
+        audioRecorder?.record()
         timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             
@@ -71,5 +79,14 @@ class SoundManager: ObservableObject {
             
             self.soundLevel = (power > -8) ? (power + 160) / 160 : 0
         }
+        
+        isMonitoring = true
+    }
+    
+    private func stopMonitoring() {
+        timer?.invalidate()
+        audioRecorder?.stop()
+        
+        isMonitoring = false
     }
 }
