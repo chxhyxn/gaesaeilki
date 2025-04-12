@@ -259,9 +259,11 @@ struct MainView: View {
                 
                 HStack {
                     Spacer()
-                    // 음성감지 on/off 버튼(마이크 심볼)
+                    // MARK: 음성감지 on/off 버튼(마이크 심볼)
                     Button(action: {
                         soundManager.toggleMonitoring()
+                        isTopTextFieldFocused = false
+                        isBottomTextFieldFocused = false
                     }) {
                         Image(systemName: soundManager.isMonitoring ? "mic.fill" : "mic.slash")
                             .font(.system(size: 22, weight: .semibold))
