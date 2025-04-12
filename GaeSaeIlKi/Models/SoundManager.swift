@@ -54,8 +54,6 @@ class SoundManager: ObservableObject {
             audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
             audioRecorder?.isMeteringEnabled = true
             audioRecorder?.prepareToRecord()
-            
-            startMonitoring()
         } catch {
             print("오디오 레코더 설정 오류: \(error.localizedDescription)")
         }

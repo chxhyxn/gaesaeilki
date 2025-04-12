@@ -21,7 +21,7 @@ class DogBird: Identifiable {
     var isFlying: Bool = false
     var rotation: Double = Double.random(in: 0...360)
     var speed: Double = Double.random(in: 1...3)
-    var size: CGFloat = CGFloat.random(in: 100...160)
+    var size: CGFloat = CGFloat.random(in: 60...120)
     
     // 방향 관련 속성 추가 (오른쪽 방향이면 true)
     var movingRight: Bool = false

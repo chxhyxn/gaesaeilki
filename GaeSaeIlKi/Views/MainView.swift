@@ -79,11 +79,11 @@ struct MainView: View {
                     ForEach(dogBirds) { dogBird in
                         ZStack {
                             if dogBird.isFlying {
-                                LottieView(name: "flying_dogbird", loopMode: .loop)
+                                LottieView(name: "1_flying", loopMode: .loop)
                                     .frame(width: dogBird.size, height: dogBird.size)
                                     .scaleEffect(x: shouldFaceRight(dogBird) ? -1 : 1, y: 1)
                             } else {
-                                LottieView(name: "dogbird", loopMode: .loop)
+                                LottieView(name: "1", loopMode: .loop)
                                     .frame(width: dogBird.size, height: dogBird.size)
                                     .scaleEffect(x: shouldFaceRight(dogBird) ? -1 : 1, y: 1)
                             }
@@ -193,7 +193,7 @@ struct MainView: View {
                         Rectangle()
                             .overlay(
                                 Circle()
-                                    .frame(width: selected.size, height: selected.size)
+                                    .frame(width: selected.size + 20, height: selected.size + 20)
                                     .position(selected.position)
                                     .blendMode(.destinationOut)
                             )
