@@ -81,9 +81,11 @@ struct MainView: View {
                             if dogBird.isFlying {
                                 LottieView(name: "flying_dogbird", loopMode: .loop)
                                     .frame(width: dogBird.size, height: dogBird.size)
+                                    .scaleEffect(x: shouldFaceRight(dogBird) ? -1 : 1, y: 1)
                             } else {
                                 LottieView(name: "dogbird", loopMode: .loop)
                                     .frame(width: dogBird.size, height: dogBird.size)
+                                    .scaleEffect(x: shouldFaceRight(dogBird) ? -1 : 1, y: 1)
                             }
                             VStack {
                                 Spacer()
@@ -111,7 +113,19 @@ struct MainView: View {
                                     // 드래그 시작 또는 진행 중
                                     draggingDogBirdID = dogBird.id
                                     dogBird.isFlying = false
+                                    
+                                    // 이전 위치와 현재 위치를 비교하여 방향 업데이트
+                                    let previousX = dogBird.x
                                     dogBird.position = gesture.location
+                                    
+                                    // 이동 방향에 따라 각도 업데이트
+                                    if dogBird.x > previousX {
+                                        // 오른쪽으로 이동 중
+                                        dogBird.movingRight = true
+                                    } else if dogBird.x < previousX {
+                                        // 왼쪽으로 이동 중
+                                        dogBird.movingRight = false
+                                    }
                                     
                                     // 쓰레기통 표시
                                     trashVisible = true
@@ -361,6 +375,13 @@ struct MainView: View {
         }
     }
     
+    // MARK: 개새 이동 방향에 따라 이미지 방향 결정
+    private func shouldFaceRight(_ dogBird: DogBird) -> Bool {
+        let angle = dogBird.rotation * .pi / 180
+        let movingRight = cos(angle) > 0
+        return movingRight || dogBird.movingRight
+    }
+    
     // MARK: 개새 추가 함수
     private func addDogBird() {
         guard !failureNote.isEmpty else { return }
@@ -410,7 +431,16 @@ struct MainView: View {
                     newPosition.y = 20
                 }
                 
+                // 이전 위치와 비교하여 움직이는 방향 업데이트
+                let previousX = dogBird.x
                 dogBird.position = newPosition
+                
+                // 이동 방향에 따라 movingRight 값 업데이트
+                if dogBird.x > previousX {
+                    dogBird.movingRight = true
+                } else if dogBird.x < previousX {
+                    dogBird.movingRight = false
+                }
             } else {
                 // 소리가 없으면 자유롭게 돌아다님
                 dogBird.isFlying = false
@@ -459,7 +489,12 @@ struct MainView: View {
                     newPosition.y = fieldSize.height - 20
                 }
                 
+                // 이전 위치와 비교하여 움직이는 방향 업데이트
+                let previousX = dogBird.x
                 dogBird.position = newPosition
+                
+                // 코사인 값으로 이동 방향 결정 (cos > 0이면 오른쪽으로 이동 중)
+                dogBird.movingRight = cos(angle) > 0
             }
         }
     }
