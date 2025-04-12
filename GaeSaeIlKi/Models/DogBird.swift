@@ -25,6 +25,10 @@ class DogBird: Identifiable {
     
     // 방향 관련 속성 추가 (오른쪽 방향이면 true)
     var movingRight: Bool = false
+    
+    // 추가 속성
+    var createdAt: Date = Date()
+    var goalAtCreation: String = ""
 
     var position: CGPoint {
         get { CGPoint(x: x, y: y) }
@@ -34,10 +38,12 @@ class DogBird: Identifiable {
         }
     }
 
-    init(id: UUID = UUID(), position: CGPoint, failureNote: String) {
+    init(id: UUID = UUID(), position: CGPoint, failureNote: String, goalAtCreation: String = "") {
         self.id = id
         self.x = position.x
         self.y = position.y
         self.failureNote = failureNote
+        self.goalAtCreation = goalAtCreation
+        self.createdAt = Date()
     }
 }

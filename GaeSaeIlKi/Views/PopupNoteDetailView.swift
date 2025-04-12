@@ -12,13 +12,19 @@ struct PopupNoteDetailView: View {
     @Binding var failureNote: String
     @State private var editedNote: String
     @State private var isEditing: Bool = false
+    
+    // 추가 - 당시 목표 및 생성 일자 표시를 위한 속성
+    var goalAtCreation: String
+    var createdAt: Date
         
     @GestureState private var dragOffset: CGFloat = 0
     
-    init(isPresented: Binding<Bool>, failureNote: Binding<String>) {
+    init(isPresented: Binding<Bool>, failureNote: Binding<String>, goalAtCreation: String = "", createdAt: Date = Date()) {
         self._isPresented = isPresented
         self._failureNote = failureNote
         self._editedNote = State(initialValue: failureNote.wrappedValue)
+        self.goalAtCreation = goalAtCreation
+        self.createdAt = createdAt
     }
     
     var body: some View {
@@ -85,12 +91,21 @@ struct PopupNoteDetailView: View {
                 Divider()
                     .background(Color.white.opacity(0.7))
                 
-                Text("당시 목표 : Challenge2 열심히 하기")
-                    .font(.subheadline)
-                    .foregroundColor(.primary)
-                    .padding(.horizontal)
+                // 당시 목표 표시 (비어있지 않을 경우에만)
+                if !goalAtCreation.isEmpty {
+                    Text("당시 목표 : \(goalAtCreation)")
+                        .font(.subheadline)
+                        .foregroundColor(.primary)
+                        .padding(.horizontal)
+                } else {
+                    Text("당시 목표 : 설정된 목표 없음")
+                        .font(.subheadline)
+                        .foregroundColor(.primary.opacity(0.7))
+                        .padding(.horizontal)
+                }
                 
-                Text("생성 일자 : YYYY-MM-DD")
+                // 날짜 포맷터
+                Text("생성 일자 : \(formattedDate(createdAt))")
                     .font(.subheadline)
                     .foregroundColor(.primary)
                     .padding(.horizontal)
@@ -161,6 +176,13 @@ struct PopupNoteDetailView: View {
             )
         }
         .animation(.default, value: isEditing)
+    }
+    
+    // 날짜 포맷 함수
+    private func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+        return formatter.string(from: date)
     }
     
     private func commitChanges() {

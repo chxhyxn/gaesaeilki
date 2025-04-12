@@ -87,19 +87,6 @@ struct MainView: View {
                                     .frame(width: dogBird.size, height: dogBird.size)
                                     .scaleEffect(x: shouldFaceRight(dogBird) ? -1 : 1, y: 1)
                             }
-                            VStack {
-                                Spacer()
-                                    .frame(height: dogBird.size * 3 / 5)
-                                Text("이름 없는 개새")
-                                    .frame(height: 20)
-                                    .font(.caption2)
-                                    .padding(.horizontal, 4)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .fill(.black.opacity(0.3))
-                                    )
-                                    .foregroundStyle(.white)
-                            }
                         }
                         .position(dogBird.position)
                         .scaleEffect(draggingDogBirdID == dogBird.id ? 1.1 : 1.0)
@@ -304,7 +291,9 @@ struct MainView: View {
                                 self.editedNote = $0
                                 dogBird.failureNote = $0
                             }
-                        )
+                        ),
+                        goalAtCreation: dogBird.goalAtCreation,
+                        createdAt: dogBird.createdAt
                     )
                     .id(dogBird.id)
                     .transition(.move(edge: .bottom))
@@ -375,7 +364,7 @@ struct MainView: View {
         }
     }
     
-    // MARK: 개새 이동 방향에 따라 이미지 방향 결정
+    // 개새 이동 방향에 따라 이미지 방향 결정
     private func shouldFaceRight(_ dogBird: DogBird) -> Bool {
         let angle = dogBird.rotation * .pi / 180
         let movingRight = cos(angle) > 0
@@ -391,7 +380,8 @@ struct MainView: View {
         
         let newDogBird = DogBird(
             position: CGPoint(x: randomX, y: randomY),
-            failureNote: failureNote
+            failureNote: failureNote,
+            goalAtCreation: currentGoal
         )
         
         context.insert(newDogBird)
