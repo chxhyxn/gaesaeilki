@@ -299,25 +299,16 @@ struct MainView: View {
                                 isBottomTextFieldFocused = false
                             }) {
                                 Image(systemName: "plus")
-                                    .symbolEffect(.bounce, value: failureNote.isEmpty || failureNote.count > 110)
+                                    .symbolEffect(.bounce, value: failureNote.isEmpty)
                                     .font(.system(size: 22, weight: .semibold))
-                                    .foregroundColor(failureNote.isEmpty || failureNote.count > 110 ? .gray.opacity(0.2) : .gray)
+                                    .foregroundColor(failureNote.isEmpty ? .gray.opacity(0.2) : .gray)
                                     .frame(width: 55, height: 55)
                                     .background(
                                         Circle()
-                                            .fill(failureNote.isEmpty || failureNote.count > 110 ? .white.opacity(0.2) : .white)
+                                            .fill(failureNote.isEmpty ? .white.opacity(0.2) : .white)
                                     )
                             }
-                            .disabled(failureNote.isEmpty || failureNote.count > 110)
-                            
-                            if failureNote.count > 64 {
-                                Text("\(failureNote.count)/110")
-                                    .font(.caption)
-                                    .foregroundColor(
-                                        failureNote.count > 110 ? .red : .gray
-                                    )
-                                    .padding(.top, 4)
-                            }
+                            .disabled(failureNote.isEmpty)
                         }
                     }
                     .padding()
