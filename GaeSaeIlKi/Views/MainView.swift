@@ -175,6 +175,32 @@ struct MainView: View {
                 Spacer()
             }
             
+            // MARK: SPOTLIGHT SELECTED DOG
+            if let selected = selectedDogBird, showingNoteDetail {
+                Color.black.opacity(0.6)
+                    .onTapGesture {
+                        // 어두운 영역 탭 시 팝업 닫기
+                        withAnimation {
+                            showingNoteDetail = false
+                            selectedDogBird = nil
+                        }
+                    }
+                    .mask {
+                        // 구멍 뚫기: 선택된 개새 위치만 투명하게
+                        Rectangle()
+                            .overlay(
+                                Circle()
+                                    .frame(width: selected.size, height: selected.size)
+                                    .position(selected.position)
+                                    .blendMode(.destinationOut)
+                            )
+                    }
+                    .compositingGroup()
+                    .animation(.easeInOut(duration: 0.3), value: selectedDogBird?.id)
+                    .transition(.opacity)
+                    .ignoresSafeArea()
+            }
+            
             // UI
             VStack {
                 // MARK: 상단 UI
