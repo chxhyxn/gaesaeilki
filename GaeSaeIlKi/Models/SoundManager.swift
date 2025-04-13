@@ -85,6 +85,7 @@ class SoundManager: ObservableObject {
         timer?.invalidate()
         audioRecorder?.stop()
         
+        soundLevel = 0
         isMonitoring = false
     }
 }

@@ -27,6 +27,9 @@ struct MainView: View {
     
     @StateObject var soundManager = SoundManager()
     
+    // dogBird type
+    @State private var current_type_id: Int = 0
+    
     // 노트 팝업 관련 상태
     @State private var selectedDogBird: DogBird?
     @State private var showingNoteDetail = false
@@ -63,14 +66,14 @@ struct MainView: View {
                             .background(
                                 Circle()
                                     .fill(trashHighlighted ? .white.opacity(0.9) : .white.opacity(0.8))
-                                )
+                            )
                             .overlay(
                                 Circle()
                                     .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                             )
                             .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 3)
                     }
-                    .position(x: geometry.size.width / 2, y: geometry.size.height - 120)
+                    .position(x: geometry.size.width / 2, y: 120)
                     .opacity(trashVisible ? 1 : 0)
                     .animation(.spring(response: 0.3, dampingFraction: 0.7), value: trashVisible)
                     .animation(.spring(response: 0.3, dampingFraction: 0.7), value: trashHighlighted)
@@ -79,11 +82,11 @@ struct MainView: View {
                     ForEach(dogBirds) { dogBird in
                         ZStack {
                             if dogBird.isFlying {
-                                LottieView(name: "1_flying", loopMode: .loop)
+                                LottieView(name: "\(dogBird.type_id)_flying", loopMode: .loop)
                                     .frame(width: dogBird.size, height: dogBird.size)
                                     .scaleEffect(x: shouldFaceRight(dogBird) ? -1 : 1, y: 1)
                             } else {
-                                LottieView(name: "1", loopMode: .loop)
+                                LottieView(name: "\(dogBird.type_id)", loopMode: .loop)
                                     .frame(width: dogBird.size, height: dogBird.size)
                                     .scaleEffect(x: shouldFaceRight(dogBird) ? -1 : 1, y: 1)
                             }
@@ -120,7 +123,7 @@ struct MainView: View {
                                     // 쓰레기통 위에 있는지 확인
                                     let trashPosition = CGPoint(
                                         x: geometry.size.width / 2,
-                                        y: geometry.size.height - 120
+                                        y: 120
                                     )
                                     
                                     let distance = sqrt(
@@ -134,7 +137,7 @@ struct MainView: View {
                                     // 드래그 종료
                                     let trashPosition = CGPoint(
                                         x: geometry.size.width / 2,
-                                        y: geometry.size.height - 120
+                                        y: 120
                                     )
                                     
                                     let distance = sqrt(
@@ -193,7 +196,7 @@ struct MainView: View {
                         Rectangle()
                             .overlay(
                                 Circle()
-                                    .frame(width: selected.size + 20, height: selected.size + 20)
+                                    .frame(width: selected.size + 30, height: selected.size + 30)
                                     .position(selected.position)
                                     .blendMode(.destinationOut)
                             )
@@ -219,7 +222,7 @@ struct MainView: View {
                             .background(
                                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                                     .fill(isTopTextFieldFocused ? .white : .white.opacity(0.5))
-                                )
+                            )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.white.opacity(0.2), lineWidth: 1)
@@ -268,7 +271,7 @@ struct MainView: View {
                     }) {
                         Image(systemName: soundManager.isMonitoring ? "mic.fill" : "mic.slash")
                             .font(.system(size: 22, weight: .semibold))
-                            .foregroundColor(soundManager.isMonitoring ? .white : .gray)
+                            .foregroundColor(.white)
                             .frame(width: 44, height: 44)
                             .background(
                                 Circle()
@@ -298,56 +301,91 @@ struct MainView: View {
                     .id(dogBird.id)
                     .transition(.move(edge: .bottom))
                 }else {
-                    HStack(alignment: .top) {
-                        TextField("오늘의 실패일기를 작성하세요.", text: $failureNote, axis: .vertical)
-                            .padding()
+                    VStack {
+                        HStack {
+                            // MARK: type 고르는 ui
+                            HStack {
+                                ForEach(0...3, id: \.self) { i in
+                                    Button(action: {
+                                        current_type_id = i
+                                    }) {
+                                        Image(uiImage: UIImage(named: "\(i)")!)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .clipShape(Circle())
+                                            .opacity(current_type_id == i ? 1 : 0.5)
+                                            .frame(width: 50, height: 50)
+                                            .overlay(content: {
+                                                Circle()
+                                                    .stroke(current_type_id == i ? .white : .white.opacity(0.5), lineWidth: 2)
+                                                    .shadow(radius: 1)
+                                            })
+                                    }
+                                }
+                                .padding(.vertical, 8)
+                            }
+                            .padding(.horizontal)
                             .background(
-                                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                    .fill(isBottomTextFieldFocused ? .white : .white.opacity(0.5))
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(.ultraThinMaterial)
+                                    .shadow(radius: 1)
                             )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.white.opacity(0.2), lineWidth: 1)
-                            )
-                            .focused($isBottomTextFieldFocused)
-                            .onSubmit {
-                                if !failureNote.isEmpty {
+                            .padding(.horizontal)
+                            Spacer()
+                        }
+                        
+                        HStack(alignment: .top) {
+                            TextField("오늘의 실패일기를 작성하세요.", text: $failureNote, axis: .vertical)
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                        .fill(isBottomTextFieldFocused ? .white : .white.opacity(0.5))
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                )
+                                .focused($isBottomTextFieldFocused)
+                                .onSubmit {
+                                    if !failureNote.isEmpty {
+                                        UserDefaults.standard.set(currentGoal, forKey: "currentGoal")
+                                        addDogBird()
+                                        isBottomTextFieldFocused = false
+                                    }
+                                }
+                            
+                            VStack {
+                                Button(action: {
                                     UserDefaults.standard.set(currentGoal, forKey: "currentGoal")
                                     addDogBird()
                                     isBottomTextFieldFocused = false
+                                }) {
+                                    Image(systemName: "plus")
+                                        .symbolEffect(.bounce, value: failureNote.isEmpty)
+                                        .font(.system(size: 22, weight: .semibold))
+                                        .foregroundColor(failureNote.isEmpty ? .gray.opacity(0.2) : .gray)
+                                        .frame(width: 55, height: 55)
+                                        .background(
+                                            Circle()
+                                                .fill(failureNote.isEmpty ? .white.opacity(0.2) : .white)
+                                        )
                                 }
+                                .disabled(failureNote.isEmpty)
                             }
-                        
-                        VStack {
-                            Button(action: {
-                                UserDefaults.standard.set(currentGoal, forKey: "currentGoal")
-                                addDogBird()
-                                isBottomTextFieldFocused = false
-                            }) {
-                                Image(systemName: "plus")
-                                    .symbolEffect(.bounce, value: failureNote.isEmpty)
-                                    .font(.system(size: 22, weight: .semibold))
-                                    .foregroundColor(failureNote.isEmpty ? .gray.opacity(0.2) : .gray)
-                                    .frame(width: 55, height: 55)
-                                    .background(
-                                        Circle()
-                                            .fill(failureNote.isEmpty ? .white.opacity(0.2) : .white)
-                                    )
-                            }
-                            .disabled(failureNote.isEmpty)
                         }
-                    }
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.ultraThinMaterial)
-                            .shadow(radius: 1)
-                    )
-                    .lineLimit(1...7)
-                    .padding()
-                    .onTapGesture {
-                        isTopTextFieldFocused = false
-                        isBottomTextFieldFocused = false
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(.ultraThinMaterial)
+                                .shadow(radius: 1)
+                        )
+                        .lineLimit(1...7)
+                        .padding(.horizontal)
+                        .padding(.bottom)
+                        .onTapGesture {
+                            isTopTextFieldFocused = false
+                            isBottomTextFieldFocused = false
+                        }
                     }
                     .transition(.move(edge: .bottom))
                 }
@@ -379,6 +417,7 @@ struct MainView: View {
         let randomY = CGFloat.random(in: 50..<(fieldSize.height - 50))
         
         let newDogBird = DogBird(
+            type_id: current_type_id,
             position: CGPoint(x: randomX, y: randomY),
             failureNote: failureNote,
             goalAtCreation: currentGoal

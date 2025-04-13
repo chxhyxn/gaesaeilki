@@ -12,6 +12,7 @@ import SwiftData
 class DogBird: Identifiable {
     var id = UUID()
     var name: String = "이름없는 개새"
+    var type_id: Int = 0
     
     // CGPoint 대신 개별 속성으로 저장
     var x: Double
@@ -38,8 +39,9 @@ class DogBird: Identifiable {
         }
     }
 
-    init(id: UUID = UUID(), position: CGPoint, failureNote: String, goalAtCreation: String = "") {
+    init(id: UUID = UUID(), type_id: Int, position: CGPoint, failureNote: String, goalAtCreation: String = "") {
         self.id = id
+        self.type_id = type_id
         self.x = position.x
         self.y = position.y
         self.failureNote = failureNote
