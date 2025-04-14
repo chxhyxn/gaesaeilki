@@ -42,7 +42,8 @@ struct MainView: View {
             GeometryReader { geometry in
                 ZStack {
                     // MARK: 잔디 배경
-                    Image(uiImage: UIImage(named: "bg")!)
+//                    Image(uiImage: UIImage(named: "bg")!)
+                    Image("bg")
                         .resizable(resizingMode: .stretch)
                         .onAppear {
                             fieldSize = geometry.size
@@ -73,7 +74,7 @@ struct MainView: View {
                             )
                             .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 3)
                     }
-                    .position(x: geometry.size.width / 2, y: 120)
+                    .position(x: geometry.size.width / 2, y: geometry.size.height / 2 + 180)
                     .opacity(trashVisible ? 1 : 0)
                     .animation(.spring(response: 0.3, dampingFraction: 0.7), value: trashVisible)
                     .animation(.spring(response: 0.3, dampingFraction: 0.7), value: trashHighlighted)
@@ -82,14 +83,18 @@ struct MainView: View {
                     ForEach(dogBirds) { dogBird in
                         ZStack {
                             if dogBird.isFlying {
-                                LottieView(name: "\(dogBird.type_id)_flying", loopMode: .loop)
-                                    .frame(width: dogBird.size, height: dogBird.size)
-                                    .scaleEffect(x: shouldFaceRight(dogBird) ? -1 : 1, y: 1)
-                            } else {
-                                LottieView(name: "\(dogBird.type_id)", loopMode: .loop)
+//                                LottieView(name: "\(dogBird.type_id)_flying", loopMode: .loop)
+//                                Image(uiImage: UIImage(named: "\(dogBird.type_id)_flying")!)
+                                Image("\(dogBird.type_id)_flying")
+                                    .resizable()
+                                    .scaledToFit()
                                     .frame(width: dogBird.size, height: dogBird.size)
                                     .scaleEffect(x: shouldFaceRight(dogBird) ? -1 : 1, y: 1)
                             }
+                            LottieView(name: "\(dogBird.type_id)", loopMode: .loop)
+                                .frame(width: dogBird.size, height: dogBird.size)
+                                .scaleEffect(x: shouldFaceRight(dogBird) ? -1 : 1, y: 1)
+                                .opacity(dogBird.isFlying ? 0.05 : 1)
                         }
                         .position(dogBird.position)
                         .scaleEffect(draggingDogBirdID == dogBird.id ? 1.1 : 1.0)
@@ -123,7 +128,7 @@ struct MainView: View {
                                     // 쓰레기통 위에 있는지 확인
                                     let trashPosition = CGPoint(
                                         x: geometry.size.width / 2,
-                                        y: 120
+                                        y: geometry.size.height / 2 + 180
                                     )
                                     
                                     let distance = sqrt(
@@ -137,7 +142,7 @@ struct MainView: View {
                                     // 드래그 종료
                                     let trashPosition = CGPoint(
                                         x: geometry.size.width / 2,
-                                        y: 120
+                                        y: geometry.size.height / 2 + 180
                                     )
                                     
                                     let distance = sqrt(
@@ -309,7 +314,8 @@ struct MainView: View {
                                     Button(action: {
                                         current_type_id = i
                                     }) {
-                                        Image(uiImage: UIImage(named: "\(i)")!)
+//                                        Image(uiImage: UIImage(named: "\(i)")!)
+                                        Image("\(i)")
                                             .resizable()
                                             .scaledToFit()
                                             .clipShape(Circle())
@@ -442,7 +448,7 @@ struct MainView: View {
                 continue
             }
             
-            if soundManager.soundLevel > 0 {
+            if soundManager.soundLevel > 0.9 {
                 // 소리가 감지되면 위로 날아간다
                 dogBird.isFlying = true
                 var newPosition = dogBird.position

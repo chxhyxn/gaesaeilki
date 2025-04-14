@@ -76,6 +76,7 @@ class SoundManager: ObservableObject {
             let power = self.audioRecorder?.averagePower(forChannel: 0) ?? -160
             
             self.soundLevel = (power > -8) ? (power + 160) / 160 : 0
+            self.soundLevel = (power > -80) ? (power + 80) / 80 : 0
         }
         
         isMonitoring = true
