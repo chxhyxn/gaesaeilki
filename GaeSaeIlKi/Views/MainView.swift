@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import StoreKit
 
 struct MainView: View {
     @Environment(\.modelContext) private var context
@@ -431,6 +432,14 @@ struct MainView: View {
         
         context.insert(newDogBird)
         failureNote = ""
+        
+        totalGaeSae += 1
+        UserDefaults.standard.set(totalGaeSae, forKey: "totalGaeSae")
+        if totalGaeSae % 2 == 1 {
+            if #available(iOS 10.3, *) {
+                SKStoreReviewController.requestReview()
+            }
+        }
     }
     
     // MARK: 노트 상세 보기 표시

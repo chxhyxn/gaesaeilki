@@ -281,7 +281,7 @@
 				INFOPLIST_FILE = GaeSaeIlKi/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "개새일기";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "큰 소리를 감지해 개새를 놀래킬 수 있어요!";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -314,7 +314,7 @@
 				INFOPLIST_FILE = GaeSaeIlKi/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "개새일기";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "큰 소리를 감지해 개새를 놀래킬 수 있어요!";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
