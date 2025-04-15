@@ -435,7 +435,7 @@ struct MainView: View {
         
         totalGaeSae += 1
         UserDefaults.standard.set(totalGaeSae, forKey: "totalGaeSae")
-        if totalGaeSae % 2 == 1 {
+        if totalGaeSae % 50 == 49 {
             if #available(iOS 10.3, *) {
                 SKStoreReviewController.requestReview()
             }
