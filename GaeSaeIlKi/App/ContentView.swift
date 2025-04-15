@@ -17,6 +17,7 @@ struct ContentView: View {
             case .main:
                 MainView()
                     .modelContainer(for: [DogBird.self])
+                    .preferredColorScheme(.light)
             }
         }
     }
