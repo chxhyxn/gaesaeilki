@@ -36,6 +36,9 @@ struct MainView: View {
     @State private var showingNoteDetail = false
     @State private var editedNote = ""
     
+    // 일기 리스트 보여주기
+    @State private var showFailureNoteNavigatorView = false
+    
     let timer = Timer.publish(every: 0.03, on: .main, in: .common).autoconnect()
     
     var body: some View {
@@ -285,6 +288,22 @@ struct MainView: View {
                                     .shadow(radius: 1)
                             )
                     }
+                    .padding(.horizontal)
+                    
+                    // MARK: 일기가 정리된 화면 보여주기
+                    Button(action: {
+                        showFailureNoteNavigatorView = true
+                    }) {
+                        Image(systemName: "list.bullet")
+                            .font(.system(size: 22, weight: .semibold))
+                            .foregroundColor(.white)
+                            .frame(width: 44, height: 44)
+                            .background(
+                                Circle()
+                                    .fill(.ultraThinMaterial)
+                                    .shadow(radius: 1)
+                            )
+                    }
                     .padding(.trailing)
                 }
                 
@@ -406,6 +425,11 @@ struct MainView: View {
         .animation(.easeInOut(duration: 0.5), value: selectedDogBird?.id)
         .onReceive(timer) { _ in
             updateDogBirdPositions()
+        }
+        .sheet(isPresented: $showFailureNoteNavigatorView) {
+            FailureNoteNavigatorView()
+                .presentationDetents([.medium, .large]) // 너비 범위
+                .presentationDragIndicator(.visible)    // 위에 끌 수 있는 바 표시
         }
     }
     
