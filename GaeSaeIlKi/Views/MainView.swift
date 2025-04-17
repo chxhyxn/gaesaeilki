@@ -39,6 +39,11 @@ struct MainView: View {
     // 일기 리스트 보여주기
     @State private var showFailureNoteNavigatorView = false
     
+    // 사운드 도움말 보여주기
+    @State private var quietTime: TimeInterval = 0
+    @State private var lastUpdateTime: Date = Date()
+    @State private var showSoundPrompt: Bool = false
+    
     let timer = Timer.publish(every: 0.03, on: .main, in: .common).autoconnect()
     
     var body: some View {
@@ -185,7 +190,7 @@ struct MainView: View {
             if soundManager.isMonitoring {
                 VStack {
                     Spacer()
-                    VolumeRingView(decibel: soundManager.soundLevel)
+                    VolumeRingView(decibel: soundManager.soundLevel, showPrompt: showSoundPrompt)
                     Spacer()
                 }
             }
@@ -423,8 +428,35 @@ struct MainView: View {
         .animation(.default, value: isBottomTextFieldFocused)
         .animation(.easeInOut(duration: 0.5), value: showingNoteDetail)
         .animation(.easeInOut(duration: 0.5), value: selectedDogBird?.id)
-        .onReceive(timer) { _ in
+        .onReceive(timer) { currentTime in
             updateDogBirdPositions()
+            
+            // Track how long the sound has been below threshold
+            let timeSinceLastUpdate = currentTime.timeIntervalSince(lastUpdateTime)
+            lastUpdateTime = currentTime
+            
+            if soundManager.isMonitoring {
+                if soundManager.soundLevel < 0.9 {
+                    quietTime += timeSinceLastUpdate
+                    if quietTime > 5.0 && !showSoundPrompt {
+                        withAnimation {
+                            showSoundPrompt = true
+                        }
+                    }
+                } else {
+                    // Reset when sound exceeds threshold
+                    quietTime = 0
+                    if showSoundPrompt {
+                        withAnimation {
+                            showSoundPrompt = false
+                        }
+                    }
+                }
+            } else {
+                // Reset when not monitoring
+                quietTime = 0
+                showSoundPrompt = false
+            }
         }
         .sheet(isPresented: $showFailureNoteNavigatorView) {
             FailureNoteNavigatorView()
