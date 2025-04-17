@@ -139,11 +139,7 @@ struct PopupNoteDetailView: View {
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(.white.opacity(0.3))
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.white.opacity(0.4), lineWidth: 1)
+                            .fill(.white.opacity(0.1))
                     )
                     .frame(maxHeight: 200)
                     .padding(.horizontal)
@@ -153,10 +149,6 @@ struct PopupNoteDetailView: View {
             .background(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .fill(.ultraThinMaterial)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(Color.white.opacity(0.5), lineWidth: 1)
             )
             .shadow(color: Color.black.opacity(0.15), radius: 15, x: 0, y: 5)
             .padding()
