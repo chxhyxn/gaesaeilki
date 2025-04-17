@@ -44,6 +44,9 @@ struct MainView: View {
     @State private var lastUpdateTime: Date = Date()
     @State private var showSoundPrompt: Bool = false
     
+    // 새로 추가된 DogBird 상태 추적
+    @State private var recentlyAddedDogBirdID: UUID? = nil
+    
     let timer = Timer.publish(every: 0.03, on: .main, in: .common).autoconnect()
     
     var body: some View {
@@ -104,6 +107,20 @@ struct MainView: View {
                                 .frame(width: dogBird.size, height: dogBird.size)
                                 .scaleEffect(x: shouldFaceRight(dogBird) ? -1 : 1, y: 1)
                                 .opacity(dogBird.isFlying ? 0.05 : 1)
+                            
+                            // 새로 추가된 개새 표시
+                            if recentlyAddedDogBirdID == dogBird.id {
+                                ZStack {
+                                    Circle()
+                                        .stroke(Color.yellow, lineWidth: 5)
+                                        .fill(Color.yellow.opacity(0.3))
+                                        .frame(width: dogBird.size + 30, height: dogBird.size + 30)
+                                    
+                                    Text("New")
+                                        .font(.system(size: 12, weight: .black))
+                                        .foregroundColor(.black)
+                                }
+                            }
                         }
                         .position(dogBird.position)
                         .scaleEffect(draggingDogBirdID == dogBird.id ? 1.1 : 1.0)
@@ -476,8 +493,8 @@ struct MainView: View {
     private func addDogBird() {
         guard !failureNote.isEmpty else { return }
         
-        let randomX = CGFloat.random(in: 50..<(fieldSize.width - 50))
-        let randomY = CGFloat.random(in: 50..<(fieldSize.height - 50))
+        let randomX = fieldSize.width / 2
+        let randomY = fieldSize.height / 2
         
         let newDogBird = DogBird(
             type_id: current_type_id,
@@ -488,6 +505,18 @@ struct MainView: View {
         
         context.insert(newDogBird)
         failureNote = ""
+        
+        // 새로 생성된 DogBird에 표시하기
+        recentlyAddedDogBirdID = newDogBird.id
+        
+        // 7초 후에 New 배지 숨기기
+        DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
+            withAnimation {
+                if recentlyAddedDogBirdID == newDogBird.id {
+                    recentlyAddedDogBirdID = nil
+                }
+            }
+        }
         
         totalGaeSae += 1
         UserDefaults.standard.set(totalGaeSae, forKey: "totalGaeSae")
