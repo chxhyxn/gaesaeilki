@@ -1,28 +1,47 @@
-//
-//  FailureNoteNavigatorView.swift
-//  GaeSaeIlKi
-//
-//  Created by Sean Cho on 4/16/25.
-//
-
 import SwiftUI
 import SwiftData
 
 struct FailureNoteNavigatorView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
     @Query(sort: \DogBird.createdAt, order: .reverse) private var dogBirds: [DogBird]
     
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 16) {
+        NavigationStack {
+            List {
                 ForEach(dogBirds) { dogBird in
-                    DogBirdCardView(dogBird: dogBird)
-                        .padding(.horizontal)
+                    NavigationLink(destination: DogBirdDetailView(dogBird: dogBird)) {
+                        DogBirdCardView(dogBird: dogBird)
+                    }
+                }
+                .onDelete(perform: deleteItems)
+            }
+            .listStyle(.plain)
+            .navigationTitle("개새일기")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.gray)
+                    }
                 }
             }
-            .padding(.vertical)
         }
-        .navigationTitle("실패 노트")
+    }
+    
+    private func deleteItems(at offsets: IndexSet) {
+        for index in offsets {
+            context.delete(dogBirds[index])
+        }
+        
+        do {
+            try context.save()
+        } catch {
+            print("Error deleting items: \(error.localizedDescription)")
+        }
     }
 }
 
@@ -32,45 +51,92 @@ struct DogBirdCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text(dogBird.name)
-                    .font(.headline)
-                Spacer()
-                Text(formattedDate)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            Text(dogBird.failureNote)
-                .font(.body)
-                .multilineTextAlignment(.leading)
-            
-            if !dogBird.goalAtCreation.isEmpty {
-                Text("목표: \(dogBird.goalAtCreation)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            
-            HStack {
                 Image("\(dogBird.type_id)")
                     .resizable()
                     .scaledToFit()
                     .clipShape(Circle())
-                    .frame(width: 22, height: 22)
+                    .frame(width: 30, height: 30)
                 
+                VStack(alignment: .leading) {
+                    if !dogBird.goalAtCreation.isEmpty {
+                        Text("목표: \(dogBird.goalAtCreation)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }else {
+                        Text("목표: 당시 목표 없음")
+                            .font(.caption)
+                            .foregroundColor(.secondary.opacity(0.8))
+                            .lineLimit(1)
+                    }
+                    Text(formattedDate)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
                 Spacer()
             }
+            Text(dogBird.failureNote)
+                .font(.body)
+                .multilineTextAlignment(.leading)
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color(.systemBackground))
-                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-        )
+        .padding(.vertical)
+        .buttonStyle(PlainButtonStyle())
     }
     
     private var formattedDate: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        formatter.locale = Locale(identifier: "ko_KR")
+        return formatter.string(from: dogBird.createdAt)
+    }
+}
+
+struct DogBirdDetailView: View {
+    let dogBird: DogBird
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                HStack {
+                    Image("\(dogBird.type_id)")
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(Circle())
+                        .frame(width: 60, height: 60)
+                    
+                    VStack(alignment: .leading) {
+                        Text(formattedDate)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        
+                        if !dogBird.goalAtCreation.isEmpty {
+                            Text("목표: \(dogBird.goalAtCreation)")
+                                .font(.headline)
+                        }
+                    }
+                }
+                .padding(.horizontal)
+                
+                Divider()
+                
+                Text(dogBird.failureNote)
+                    .font(.body)
+                    .padding(.horizontal)
+                    .multilineTextAlignment(.leading)
+                
+                Spacer()
+            }
+            .padding(.vertical)
+        }
+        .navigationTitle("개새일기 상세")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    private var formattedDate: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
         formatter.timeStyle = .short
         formatter.locale = Locale(identifier: "ko_KR")
         return formatter.string(from: dogBird.createdAt)

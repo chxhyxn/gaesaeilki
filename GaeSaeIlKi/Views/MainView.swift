@@ -428,8 +428,8 @@ struct MainView: View {
         }
         .sheet(isPresented: $showFailureNoteNavigatorView) {
             FailureNoteNavigatorView()
-                .presentationDetents([.medium, .large]) // 너비 범위
-                .presentationDragIndicator(.visible)    // 위에 끌 수 있는 바 표시
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
         }
     }
     
