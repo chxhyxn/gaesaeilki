@@ -47,6 +47,9 @@ struct MainView: View {
     // 새로 추가된 DogBird 상태 추적
     @State private var recentlyAddedDogBirdID: UUID? = nil
     
+    // 배경 넘버
+    @State private var bgNum: Int = 0
+    
     let timer = Timer.publish(every: 0.03, on: .main, in: .common).autoconnect()
     
     var body: some View {
@@ -54,12 +57,23 @@ struct MainView: View {
             GeometryReader { geometry in
                 ZStack {
                     // MARK: 잔디 배경
-//                    Image(uiImage: UIImage(named: "bg")!)
-                    Image("bg")
-                        .resizable(resizingMode: .stretch)
-                        .onAppear {
-                            fieldSize = geometry.size
-                        }
+                    GeometryReader { geometry in
+                        Image("bg\(bgNum)")
+                            .resizable()                         // 리사이즈 가능하게
+                            .scaledToFill()
+                            .frame(width: fieldSize.width, height: fieldSize.height)
+                            .onAppear {
+                                fieldSize = geometry.size
+                            }
+                            .gesture(
+                                DragGesture(minimumDistance: 20)
+                                    .onEnded { value in
+                                        if abs(value.translation.width) > abs(value.translation.height) {
+                                            bgNum = (bgNum + 1) % 7
+                                        }
+                                    }
+                            )
+                    }
                     
                     // MARK: 쓰레기통
                     ZStack {
