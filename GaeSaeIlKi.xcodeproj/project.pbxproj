@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B94519B62DA5EF580093F721 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = B94519B52DA5EF580093F721 /* Lottie */; };
+		B996C6BB2DB5F595004D9327 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B996C6BA2DB5F595004D9327 /* SDWebImageSwiftUI */; };
+		B996C6C82DB5F888004D9327 /* SDWebImageWebPCoder in Frameworks */ = {isa = PBXBuildFile; productRef = B996C6C72DB5F888004D9327 /* SDWebImageWebPCoder */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,7 +41,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B94519B62DA5EF580093F721 /* Lottie in Frameworks */,
+				B996C6C82DB5F888004D9327 /* SDWebImageWebPCoder in Frameworks */,
+				B996C6BB2DB5F595004D9327 /* SDWebImageSwiftUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,7 +85,8 @@
 			);
 			name = GaeSaeIlKi;
 			packageProductDependencies = (
-				B94519B52DA5EF580093F721 /* Lottie */,
+				B996C6BA2DB5F595004D9327 /* SDWebImageSwiftUI */,
+				B996C6C72DB5F888004D9327 /* SDWebImageWebPCoder */,
 			);
 			productName = GaeSaeIlKi;
 			productReference = B94519662DA5ED5E0093F721 /* GaeSaeIlKi.app */;
@@ -114,7 +117,8 @@
 			mainGroup = B945195D2DA5ED5E0093F721;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				B94519B42DA5EF580093F721 /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				B996C6B92DB5F595004D9327 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+				B996C6C62DB5F888004D9327 /* XCRemoteSwiftPackageReference "SDWebImageWebPCoder" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B94519672DA5ED5E0093F721 /* Products */;
@@ -366,21 +370,34 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		B94519B42DA5EF580093F721 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+		B996C6B92DB5F595004D9327 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.5.1;
+				minimumVersion = 3.1.3;
+			};
+		};
+		B996C6C62DB5F888004D9327 /* XCRemoteSwiftPackageReference "SDWebImageWebPCoder" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageWebPCoder";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.14.6;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		B94519B52DA5EF580093F721 /* Lottie */ = {
+		B996C6BA2DB5F595004D9327 /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B94519B42DA5EF580093F721 /* XCRemoteSwiftPackageReference "lottie-ios" */;
-			productName = Lottie;
+			package = B996C6B92DB5F595004D9327 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
+		B996C6C72DB5F888004D9327 /* SDWebImageWebPCoder */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B996C6C62DB5F888004D9327 /* XCRemoteSwiftPackageReference "SDWebImageWebPCoder" */;
+			productName = SDWebImageWebPCoder;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
