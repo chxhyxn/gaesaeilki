@@ -110,18 +110,12 @@ struct MainView: View {
                     ForEach(dogBirds) { dogBird in
                         ZStack {
                             if dogBird.isFlying {
-//                                LottieView(name: "\(dogBird.type_id)_flying", loopMode: .loop)
-//                                Image(uiImage: UIImage(named: "\(dogBird.type_id)_flying")!)
                                 Image("\(dogBird.type_id)_flying")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: dogBird.size, height: dogBird.size)
                                     .scaleEffect(x: shouldFaceRight(dogBird) ? -1 : 1, y: 1)
                             }
-//                            LottieView(name: "\(dogBird.type_id)", loopMode: .loop)
-//                                .frame(width: dogBird.size, height: dogBird.size)
-//                                .scaleEffect(x: shouldFaceRight(dogBird) ? -1 : 1, y: 1)
-//                                .opacity(dogBird.isFlying ? 0.05 : 1)
                             if let path = Bundle.main.path(forResource: "\(dogBird.type_id)", ofType: "webp") {
                                 let url = URL(fileURLWithPath: path)
                                 AnimatedImage(url: url)
