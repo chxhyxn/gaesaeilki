@@ -17,7 +17,7 @@ struct VolumeRingView: View {
             
             // Prompt text that appears after 5 seconds of quietness
             if showPrompt {
-                Text("큰소리를 질러 개새들을 놀래키세요!")
+                Text("큰 소리를 질러 개새들을 놀래키세요!")
                     .font(.system(size: 16 + CGFloat(decibel) * 10))
                     .foregroundColor(.white)
                     .shadow(radius: 5)

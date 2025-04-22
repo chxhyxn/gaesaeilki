@@ -13,6 +13,7 @@ class DogBird: Identifiable {
     var id = UUID()
     var name: String = "이름없는 개새"
     var type_id: Int = 0
+    var isFlyAway: Bool = false
     
     // CGPoint 대신 개별 속성으로 저장
     var x: Double

@@ -12,7 +12,8 @@ import SDWebImageSwiftUI
 
 struct MainView: View {
     @Environment(\.modelContext) private var context
-    @Query private var dogBirds: [DogBird]
+    
+    @Query(filter: #Predicate<DogBird> { !$0.isFlyAway }) private var dogBirds: [DogBird]
     
     @State private var fieldSize: CGSize = .zero
     @AppStorage("currentGoal") var currentGoal: String = ""
