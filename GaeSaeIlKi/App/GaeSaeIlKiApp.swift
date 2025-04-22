@@ -29,8 +29,8 @@ struct GaeSaeIlKiApp: App {
                     if isFirstLaunch {
                         appState.currentScreen = .onboarding
                     } else if hasNoGoal {
-                        appState.currentScreen = .onboarding // TODO: 온보딩뷰 띄우기용
-                        isFirstLaunch = true // TODO: 온보딩뷰 띄우기용
+                        appState.currentScreen = .setGoal
+                        isFirstLaunch = false
                     } else {
                         appState.currentScreen = .main
                     }

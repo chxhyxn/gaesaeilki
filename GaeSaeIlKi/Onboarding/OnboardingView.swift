@@ -85,7 +85,7 @@ struct OnboardingView: View {
         if currentDialogueIndex < dialogues.count - 1 {
             currentDialogueIndex += 1
         } else {
-            appState.currentScreen = .onboarding // TODO: .setGoal로 수정해야댐
+            appState.currentScreen = .setGoal
             isFirstLaunch = false
         }
     }
