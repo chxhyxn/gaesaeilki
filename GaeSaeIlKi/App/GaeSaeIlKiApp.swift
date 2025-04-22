@@ -11,7 +11,10 @@ import SDWebImageWebPCoder
 
 @main
 struct GaeSaeIlKiApp: App {
-    @State private var viewModel = ContentViewModel()
+    @AppStorage("isFirstLaunch") var isFirstLaunch: Bool = true
+    @AppStorage("hasNoGoal") var hasNoGoal: Bool = true
+    
+    @State private var appState = AppState()
 
     init() {
         let WebPCoder = SDImageWebPCoder.shared
@@ -20,8 +23,18 @@ struct GaeSaeIlKiApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(viewModel)
+            RootView()
+                .environment(appState)
+                .onAppear() {
+                    if isFirstLaunch {
+                        appState.currentScreen = .onboarding
+                    } else if hasNoGoal {
+                        appState.currentScreen = .onboarding // TODO: 온보딩뷰 띄우기용
+                        isFirstLaunch = true // TODO: 온보딩뷰 띄우기용
+                    } else {
+                        appState.currentScreen = .main
+                    }
+                }
         }
     }
 }

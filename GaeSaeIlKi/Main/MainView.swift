@@ -637,7 +637,7 @@ struct MainView: View {
                 }
                 
                 // 이전 위치와 비교하여 움직이는 방향 업데이트
-                let previousX = dogBird.x
+                _ = dogBird.x
                 dogBird.position = newPosition
                 
                 // 코사인 값으로 이동 방향 결정 (cos > 0이면 오른쪽으로 이동 중)
