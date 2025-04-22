@@ -13,14 +13,12 @@ struct OnboardingView: View {
     @AppStorage("isFirstLaunch") var isFirstLaunch: Bool = true
     
     @State private var currentDialogueIndex = 0
-    @State private var showGoalView = false
     
     private let dialogues = [
         "반갑다. 나는 개새일기의 마스코트 '개새'다.",
         "너의 목표를 정하고 너의 실패를 개새일기로 남겨라.",
         "실패는 성공의 어머니라고 하지 않던가?",
         "매일 작은 실패로부터 배우며 성장하는 여정을 기록해보자.",
-        "자, 이제 목표를 설정해보자."
     ]
     
     var body: some View {
@@ -79,9 +77,7 @@ struct OnboardingView: View {
         }
     }
     
-    // Function to handle user taps
     private func handleTap() {
-        // If not at the last dialogue, move to next
         if currentDialogueIndex < dialogues.count - 1 {
             currentDialogueIndex += 1
         } else {

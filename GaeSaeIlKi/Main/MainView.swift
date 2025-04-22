@@ -15,7 +15,7 @@ struct MainView: View {
     @Query private var dogBirds: [DogBird]
     
     @State private var fieldSize: CGSize = .zero
-    @State private var currentGoal: String = (UserDefaults.standard.string(forKey: "currentGoal") ?? "")
+    @AppStorage("currentGoal") var currentGoal: String = ""
     @State private var totalGaeSae: Int = UserDefaults.standard.integer(forKey: "totalGaeSae")
     @State private var failureNote: String = ""
     
