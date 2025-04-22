@@ -24,7 +24,6 @@ struct MainView: View {
     @State private var trashHighlighted = false
     @State private var draggingDogBirdID: UUID? = nil
     
-    @FocusState private var isTopTextFieldFocused: Bool
     @FocusState private var isBottomTextFieldFocused: Bool
     
     @StateObject var soundManager = SoundManager()
@@ -60,7 +59,7 @@ struct MainView: View {
                     // MARK: 잔디 배경
                     GeometryReader { geometry in
                         Image("bg\(bgNum)")
-                            .resizable()                         // 리사이즈 가능하게
+                            .resizable()
                             .scaledToFill()
                             .frame(width: fieldSize.width, height: fieldSize.height)
                             .onAppear {
@@ -216,7 +215,6 @@ struct MainView: View {
                 }
                 .ignoresSafeArea(.all)
                 .onTapGesture {
-                    isTopTextFieldFocused = false
                     isBottomTextFieldFocused = false
                 }
             }
@@ -259,63 +257,11 @@ struct MainView: View {
             // UI
             VStack {
                 // MARK: 상단 UI
-                VStack {
-                    Text("나의 목표")
-                        .font(.headline)
-                    
-                    HStack {
-                        TextField("✏️ 당신의 목표를 작성하세요.", text: $currentGoal)
-                            .multilineTextAlignment(.center)
-                            .fontWeight(.black)
-                            .padding()
-                            .background(
-                                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                    .fill(isTopTextFieldFocused ? .white : .white.opacity(0.5))
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.white.opacity(0.2), lineWidth: 1)
-                            )
-                            .focused($isTopTextFieldFocused)
-                        
-                        if isTopTextFieldFocused {
-                            Button(action: {
-                                isTopTextFieldFocused = false
-                                UserDefaults.standard.set(currentGoal, forKey: "currentGoal")
-                            }) {
-                                Image(systemName: "checkmark")
-                                    .symbolEffect(.bounce, value: !isTopTextFieldFocused||currentGoal.isEmpty)
-                                    .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(!isTopTextFieldFocused||currentGoal.isEmpty ? .gray.opacity(0.2) : .gray)
-                                    .frame(width: 55, height: 55)
-                                    .background(
-                                        Circle()
-                                            .fill(!isTopTextFieldFocused||currentGoal.isEmpty ? .white.opacity(0.2) : .white)
-                                    )
-                            }
-                            .disabled(!isTopTextFieldFocused||currentGoal.isEmpty)
-                        }
-                    }
-                }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(.ultraThinMaterial)
-                        .shadow(radius: 1)
-                )
-                .frame(height: 120)
-                .padding()
-                .onTapGesture {
-                    isTopTextFieldFocused = false
-                    isBottomTextFieldFocused = false
-                }
-                
                 HStack {
                     Spacer()
                     // MARK: 음성감지 on/off 버튼(마이크 심볼)
                     Button(action: {
                         soundManager.toggleMonitoring()
-                        isTopTextFieldFocused = false
                         isBottomTextFieldFocused = false
                     }) {
                         Image(systemName: soundManager.isMonitoring ? "mic.fill" : "mic.slash")
@@ -374,7 +320,6 @@ struct MainView: View {
                                     Button(action: {
                                         current_type_id = i
                                     }) {
-//                                        Image(uiImage: UIImage(named: "\(i)")!)
                                         Image("\(i)")
                                             .resizable()
                                             .scaledToFit()
@@ -400,43 +345,50 @@ struct MainView: View {
                             Spacer()
                         }
                         
-                        HStack(alignment: .top) {
-                            TextField("오늘의 실패일기를 작성하세요.", text: $failureNote, axis: .vertical)
-                                .padding()
-                                .background(
-                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                        .fill(isBottomTextFieldFocused ? .white : .white.opacity(0.5))
-                                )
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
-                                )
-                                .focused($isBottomTextFieldFocused)
-                                .onSubmit {
-                                    if !failureNote.isEmpty {
+                        VStack {
+                            HStack {
+                                Text("나의 목표 : \(currentGoal)")
+                                    .font(.headline)
+                                Spacer()
+                            }
+                            HStack(alignment: .top) {
+                                TextField("오늘의 실패일기를 작성하세요.", text: $failureNote, axis: .vertical)
+                                    .padding()
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                            .fill(isBottomTextFieldFocused ? .white : .white.opacity(0.5))
+                                    )
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                    )
+                                    .focused($isBottomTextFieldFocused)
+                                    .onSubmit {
+                                        if !failureNote.isEmpty {
+                                            UserDefaults.standard.set(currentGoal, forKey: "currentGoal")
+                                            addDogBird()
+                                            isBottomTextFieldFocused = false
+                                        }
+                                    }
+                                
+                                VStack {
+                                    Button(action: {
                                         UserDefaults.standard.set(currentGoal, forKey: "currentGoal")
                                         addDogBird()
                                         isBottomTextFieldFocused = false
+                                    }) {
+                                        Image(systemName: "plus")
+                                            .symbolEffect(.bounce, value: failureNote.isEmpty)
+                                            .font(.system(size: 22, weight: .semibold))
+                                            .foregroundColor(failureNote.isEmpty ? .gray.opacity(0.2) : .gray)
+                                            .frame(width: 55, height: 55)
+                                            .background(
+                                                Circle()
+                                                    .fill(failureNote.isEmpty ? .white.opacity(0.2) : .white)
+                                            )
                                     }
+                                    .disabled(failureNote.isEmpty)
                                 }
-                            
-                            VStack {
-                                Button(action: {
-                                    UserDefaults.standard.set(currentGoal, forKey: "currentGoal")
-                                    addDogBird()
-                                    isBottomTextFieldFocused = false
-                                }) {
-                                    Image(systemName: "plus")
-                                        .symbolEffect(.bounce, value: failureNote.isEmpty)
-                                        .font(.system(size: 22, weight: .semibold))
-                                        .foregroundColor(failureNote.isEmpty ? .gray.opacity(0.2) : .gray)
-                                        .frame(width: 55, height: 55)
-                                        .background(
-                                            Circle()
-                                                .fill(failureNote.isEmpty ? .white.opacity(0.2) : .white)
-                                        )
-                                }
-                                .disabled(failureNote.isEmpty)
                             }
                         }
                         .padding()
@@ -449,7 +401,6 @@ struct MainView: View {
                         .padding(.horizontal)
                         .padding(.bottom)
                         .onTapGesture {
-                            isTopTextFieldFocused = false
                             isBottomTextFieldFocused = false
                         }
                     }
@@ -458,8 +409,6 @@ struct MainView: View {
             }
         }
         .animation(.default, value: failureNote.isEmpty)
-        .animation(.default, value: !isTopTextFieldFocused||currentGoal.isEmpty)
-        .animation(.default, value: isTopTextFieldFocused)
         .animation(.default, value: isBottomTextFieldFocused)
         .animation(.easeInOut(duration: 0.5), value: showingNoteDetail)
         .animation(.easeInOut(duration: 0.5), value: selectedDogBird?.id)

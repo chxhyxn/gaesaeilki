@@ -11,7 +11,8 @@ struct SetGoalView: View {
     @Environment(AppState.self) var appState
     
     @AppStorage("currentGoal") var currentGoal: String = ""
-    
+    @AppStorage("hasNoGoal") var hasNoGoal: Bool = true
+
     @State private var currentDialogueIndex = 0
     @State private var showConfirmationAlert = false
     
@@ -138,6 +139,7 @@ struct SetGoalView: View {
             currentDialogueIndex += 1
         } else {
             appState.currentScreen = .main
+            hasNoGoal = false
         }
     }
 }
