@@ -10,7 +10,7 @@ import SwiftUI
 struct SetGoalView: View {
     @AppStorage("currentScreen") var currentScreen: ViewScreen = .onboarding
     @AppStorage("currentGoal") var currentGoal: String = ""
-
+    
     @State private var currentDialogueIndex = 0
     @State private var showConfirmationAlert = false
     @State private var isAnimating = true
@@ -27,100 +27,95 @@ struct SetGoalView: View {
     ]
     
     var body: some View {
-        ZStack {
-            Color(.white)
-                .edgesIgnoringSafeArea(.all)
+        VStack {
+            Spacer()
             
-            VStack {
+            HStack {
                 Spacer()
+                Image("GaeSae")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 200, height: 200)
+                    .offset(y: isAnimating ? 0 : 10)
+                    .animation(
+                        Animation.easeInOut(duration: 0.2)
+                            .repeatCount(8, autoreverses: false),
+                        value: isAnimating
+                    )
+            }
+            .padding(.horizontal, 30)
+            
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color(UIColor.secondarySystemBackground))
+                    .shadow(radius: 5)
                 
-                HStack {
-                    Spacer()
-                    Image("GaeSae")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 200, height: 200)
-                        .offset(y: isAnimating ? 0 : 10)
-                        .animation(
-                            Animation.easeInOut(duration: 0.2)
-                                .repeatCount(8, autoreverses: false),
-                            value: isAnimating
-                        )
-                }
-                .padding(.horizontal, 30)
-                
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(Color(UIColor.secondarySystemBackground))
-                        .shadow(radius: 5)
+                VStack(alignment: .leading, spacing: 20) {
+                    Text("개새")
+                        .font(.title.bold())
+                        .padding(.bottom, 5)
                     
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("개새")
-                            .font(.title.bold())
-                            .padding(.bottom, 5)
-                        
-                        Text((currentDialogueIndex == 2 ? "\"\(currentGoal)\"" : "") + dialogues[currentDialogueIndex])
-                            .font(.body)
-                            .lineSpacing(5)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .lineLimit(nil)
-                        
-                        if currentDialogueIndex == 1 {
-                            TextField("✏️ 당신의 목표를 작성하세요.", text: $currentGoal)
-                                .multilineTextAlignment(.center)
-                                .fontWeight(.black)
-                                .padding()
-                                .background(
-                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                        .fill(isTextFieldFocused ? .white : .white.opacity(0.5))
-                                )
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
-                                )
-                                .focused($isTextFieldFocused)
-                        }
-                        
-                        Spacer()
-                        
-                        if currentDialogueIndex == 1 {
-                            HStack {
-                                Spacer()
-                                Button(action: {
-                                    if !currentGoal.isEmpty {
-                                        showConfirmationAlert = true
-                                    }
-                                }) {
-                                    Text("작성 완료")
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                        .padding(.vertical, 10)
-                                        .padding(.horizontal, 20)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .fill(currentGoal.isEmpty ? Color.gray.opacity(0.5) : Color.blue)
-                                        )
-                                        .opacity(currentGoal.isEmpty ? 0.6 : 1.0)
+                    Text((currentDialogueIndex == 2 ? "\"\(currentGoal)\"" : "") + dialogues[currentDialogueIndex])
+                        .font(.body)
+                        .lineSpacing(5)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(nil)
+                    
+                    if currentDialogueIndex == 1 {
+                        TextField("✏️ 당신의 목표를 작성하세요.", text: $currentGoal)
+                            .multilineTextAlignment(.center)
+                            .fontWeight(.black)
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                    .fill(isTextFieldFocused ? .white : .white.opacity(0.5))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                            )
+                            .focused($isTextFieldFocused)
+                    }
+                    
+                    Spacer()
+                    
+                    if currentDialogueIndex == 1 {
+                        HStack {
+                            Spacer()
+                            Button(action: {
+                                if !currentGoal.isEmpty {
+                                    showConfirmationAlert = true
                                 }
-                                .disabled(currentGoal.isEmpty)
+                            }) {
+                                Text("작성 완료")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white)
+                                    .padding(.vertical, 10)
+                                    .padding(.horizontal, 20)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(currentGoal.isEmpty ? Color.gray.opacity(0.5) : Color.blue)
+                                    )
+                                    .opacity(currentGoal.isEmpty ? 0.6 : 1.0)
                             }
-                        } else {
-                            HStack {
-                                Spacer()
-                                Text("터치하여 계속")
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
-                                    .opacity(0.8)
-                            }
+                            .disabled(currentGoal.isEmpty)
+                        }
+                    } else {
+                        HStack {
+                            Spacer()
+                            Text("터치하여 계속")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                                .opacity(0.8)
                         }
                     }
-                    .padding(24)
                 }
-                .frame(maxHeight: 220)
-                .padding(.horizontal)
-                
-                Spacer()
+                .padding(24)
             }
+            .frame(maxHeight: 220)
+            .padding(.horizontal)
+            
+            Spacer()
         }
         .onAppear() {
             isAnimating = true

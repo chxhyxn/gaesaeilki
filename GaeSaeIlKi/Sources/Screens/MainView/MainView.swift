@@ -12,51 +12,34 @@ import SDWebImageSwiftUI
 
 struct MainView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.requestReview) private var requestReview
     
     @Query(filter: #Predicate<DogBird> { !$0.isFlyAway }) private var dogBirds: [DogBird]
-    
-    @State private var fieldSize: CGSize = .zero
     
     @AppStorage("currentGoal") var currentGoal: String = ""
     @AppStorage("currentScreen") var currentScreen: ViewScreen = .onboarding
     
+    @StateObject var soundManager = SoundManager()
+    
+    @State private var fieldSize: CGSize = .zero
     @State private var totalGaeSae: Int = UserDefaults.standard.integer(forKey: "totalGaeSae")
-    
     @State private var failureNote: String = ""
-    
-    // 쓰레기통 관련 상태
     @State private var trashVisible = false
     @State private var trashHighlighted = false
     @State private var draggingDogBirdID: UUID? = nil
-    
-    @FocusState private var isBottomTextFieldFocused: Bool
-    
-    @StateObject var soundManager = SoundManager()
-    
-    // dogBird type
     @State private var current_type_id: Int = 0
-    
-    // 노트 팝업 관련 상태
     @State private var selectedDogBird: DogBird?
     @State private var showingNoteDetail = false
     @State private var editedNote = ""
-    
-    // 일기 리스트 보여주기
     @State private var showFailureNoteNavigatorView = false
-    
-    // 사운드 도움말 보여주기
     @State private var quietTime: TimeInterval = 0
     @State private var lastUpdateTime: Date = Date()
     @State private var showSoundPrompt: Bool = false
-    
-    // 새로 추가된 DogBird 상태 추적
     @State private var recentlyAddedDogBirdID: UUID? = nil
-    
-    // 배경 넘버
     @State private var bgNum: Int = 0
-    
-    // 하얀 레이어 높이
     @State private var factorWhiteLayersHeight: CGFloat = 1
+    
+    @FocusState private var isBottomTextFieldFocused: Bool
     
     let timer = Timer.publish(every: 0.03, on: .main, in: .common).autoconnect()
     
@@ -133,7 +116,6 @@ struct MainView: View {
                                     .opacity(dogBird.isFlying ? 0.05 : 1)
                             }
                             
-                            // 새로 추가된 개새 표시
                             if recentlyAddedDogBirdID == dogBird.id {
                                 ZStack {
                                     Circle()
@@ -156,27 +138,20 @@ struct MainView: View {
                         .gesture(
                             DragGesture()
                                 .onChanged { gesture in
-                                    // 드래그 시작 또는 진행 중
                                     draggingDogBirdID = dogBird.id
                                     dogBird.isFlying = false
                                     
-                                    // 이전 위치와 현재 위치를 비교하여 방향 업데이트
                                     let previousX = dogBird.x
                                     dogBird.position = gesture.location
                                     
-                                    // 이동 방향에 따라 각도 업데이트
                                     if dogBird.x > previousX {
-                                        // 오른쪽으로 이동 중
                                         dogBird.movingRight = true
                                     } else if dogBird.x < previousX {
-                                        // 왼쪽으로 이동 중
                                         dogBird.movingRight = false
                                     }
                                     
-                                    // 쓰레기통 표시
                                     trashVisible = true
                                     
-                                    // 쓰레기통 위에 있는지 확인
                                     let trashPosition = CGPoint(
                                         x: geometry.size.width / 2,
                                         y: geometry.size.height / 2 + 180
@@ -190,7 +165,6 @@ struct MainView: View {
                                     trashHighlighted = distance < 45
                                 }
                                 .onEnded { gesture in
-                                    // 드래그 종료
                                     let trashPosition = CGPoint(
                                         x: geometry.size.width / 2,
                                         y: geometry.size.height / 2 + 180
@@ -201,14 +175,12 @@ struct MainView: View {
                                         pow(gesture.location.y - trashPosition.y, 2)
                                     )
                                     
-                                    // 쓰레기통 위에서 드롭되었으면 삭제
                                     if distance < 45 {
                                         withAnimation {
                                             modelContext.delete(dogBird)
                                         }
                                     }
                                     
-                                    // 상태 초기화
                                     draggingDogBirdID = nil
                                     trashVisible = false
                                     trashHighlighted = false
@@ -240,14 +212,12 @@ struct MainView: View {
             if let selected = selectedDogBird, showingNoteDetail {
                 Color.black.opacity(0.6)
                     .onTapGesture {
-                        // 어두운 영역 탭 시 팝업 닫기
                         withAnimation {
                             showingNoteDetail = false
                             selectedDogBird = nil
                         }
                     }
                     .mask {
-                        // 구멍 뚫기: 선택된 개새 위치만 투명하게
                         Rectangle()
                             .overlay(
                                 Circle()
@@ -262,13 +232,11 @@ struct MainView: View {
                     .ignoresSafeArea()
             }
             
-            // UI
             VStack {
                 // MARK: 상단 UI
                 // TODO: dogBirds가 20마리일때 100%인 프로그래스 뷰. 다른 UI를 참고해 배경에는 글래스모피즘 디자인을 적용한다.
                 GeometryReader { geometry in
                     ZStack(alignment: .leading) {
-                        // 배경 (Glass morphism)
                         RoundedRectangle(cornerRadius: 12)
                             .fill(.ultraThinMaterial)
                             .frame(width: geometry.size.width - 40, height: 24)
@@ -278,7 +246,6 @@ struct MainView: View {
                             )
                             .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
                         
-                        // 진행바
                         RoundedRectangle(cornerRadius: 12)
                             .fill(
                                 LinearGradient(
@@ -292,7 +259,6 @@ struct MainView: View {
                                 height: 24
                             )
                         
-                        // 텍스트
                         HStack {
                             Spacer()
                             Text("\(dogBirds.count)/20 개새")
@@ -471,7 +437,6 @@ struct MainView: View {
         .onReceive(timer) { currentTime in
             updateDogBirdPositions()
             
-            // Track how long the sound has been below threshold
             let timeSinceLastUpdate = currentTime.timeIntervalSince(lastUpdateTime)
             lastUpdateTime = currentTime
             
@@ -484,7 +449,6 @@ struct MainView: View {
                         }
                     }
                 } else {
-                    // Reset when sound exceeds threshold
                     quietTime = 0
                     if showSoundPrompt {
                         withAnimation {
@@ -493,7 +457,6 @@ struct MainView: View {
                     }
                 }
             } else {
-                // Reset when not monitoring
                 quietTime = 0
                 showSoundPrompt = false
             }
@@ -505,7 +468,6 @@ struct MainView: View {
         }
     }
     
-    // 개새 이동 방향에 따라 이미지 방향 결정
     private func shouldFaceRight(_ dogBird: DogBird) -> Bool {
         let angle = dogBird.rotation * .pi / 180
         let movingRight = cos(angle) > 0
@@ -529,10 +491,8 @@ struct MainView: View {
         modelContext.insert(newDogBird)
         failureNote = ""
         
-        // 새로 생성된 DogBird에 표시하기
         recentlyAddedDogBirdID = newDogBird.id
         
-        // 7초 후에 New 배지 숨기기
         DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
             withAnimation {
                 if recentlyAddedDogBirdID == newDogBird.id {
@@ -544,8 +504,8 @@ struct MainView: View {
         totalGaeSae += 1
         UserDefaults.standard.set(totalGaeSae, forKey: "totalGaeSae")
         if totalGaeSae % 50 == 49 {
-            if #available(iOS 10.3, *) {
-                SKStoreReviewController.requestReview()
+            Task { @MainActor in
+                requestReview()
             }
         }
         
@@ -564,19 +524,16 @@ struct MainView: View {
     // MARK: 개새 위치 업데이트
     private func updateDogBirdPositions() {
         for dogBird in dogBirds {
-            // 현재 드래그 중인 개새는 건너뜀
             if draggingDogBirdID == dogBird.id {
                 continue
             }
             
             if soundManager.soundLevel > 0.9 {
-                // 소리가 감지되면 위로 날아간다
                 dogBird.isFlying = true
                 var newPosition = dogBird.position
-                newPosition.y -= CGFloat(2.0 + (soundManager.soundLevel * 10)) // 소리 크기에 비례해서 더 빨리 올라감
-                newPosition.x += CGFloat.random(in: -2...2) // 살짝 좌우 흔들림
+                newPosition.y -= CGFloat(2.0 + (soundManager.soundLevel * 10))
+                newPosition.x += CGFloat.random(in: -2...2)
                 
-                // 화면 경계 체크
                 if newPosition.x < 20 {
                     newPosition.x = 20
                 } else if newPosition.x > fieldSize.width - 20 {
@@ -587,27 +544,22 @@ struct MainView: View {
                     newPosition.y = 20
                 }
                 
-                // 이전 위치와 비교하여 움직이는 방향 업데이트
                 let previousX = dogBird.x
                 dogBird.position = newPosition
                 
-                // 이동 방향에 따라 movingRight 값 업데이트
                 if dogBird.x > previousX {
                     dogBird.movingRight = true
                 } else if dogBird.x < previousX {
                     dogBird.movingRight = false
                 }
             } else {
-                // 소리가 없으면 자유롭게 돌아다님
                 dogBird.isFlying = false
                 let angle = dogBird.rotation * .pi / 180
                 var newPosition = dogBird.position
                 
-                // 현재 방향으로 이동
                 newPosition.x += CGFloat(cos(angle) * dogBird.speed)
                 newPosition.y += CGFloat(sin(angle) * dogBird.speed)
                 
-                // 화면 경계에 닿으면 반대 방향으로 튕김
                 var directionChanged = false
                 
                 if newPosition.x < 20 || newPosition.x > fieldSize.width - 20 {
@@ -620,19 +572,16 @@ struct MainView: View {
                     directionChanged = true
                 }
                 
-                // 방향이 변경되었다면 새 방향으로 위치 재계산
                 if directionChanged {
                     let newAngle = dogBird.rotation * .pi / 180
                     newPosition.x = dogBird.position.x + CGFloat(cos(newAngle) * dogBird.speed)
                     newPosition.y = dogBird.position.y + CGFloat(sin(newAngle) * dogBird.speed)
                 }
                 
-                // 가끔 랜덤하게 방향 변경 (3% 확률)
                 if Int.random(in: 0...100) < 3 {
                     dogBird.rotation = Double.random(in: 0...360)
                 }
                 
-                // 화면 밖에 있으면 화면 안으로 강제 이동
                 if newPosition.x < 20 {
                     newPosition.x = 20
                 } else if newPosition.x > fieldSize.width - 20 {
@@ -645,11 +594,9 @@ struct MainView: View {
                     newPosition.y = fieldSize.height - 20
                 }
                 
-                // 이전 위치와 비교하여 움직이는 방향 업데이트
                 _ = dogBird.x
                 dogBird.position = newPosition
                 
-                // 코사인 값으로 이동 방향 결정 (cos > 0이면 오른쪽으로 이동 중)
                 dogBird.movingRight = cos(angle) > 0
             }
         }

@@ -15,14 +15,14 @@ struct ResultView: View {
     @Environment(\.modelContext) private var modelContext
     
     @Query(filter: #Predicate<DogBird> { !$0.isFlyAway }) private var dogBirds: [DogBird]
-
+    
     @State private var currentDialogueIndex = 0
     @State private var isAnimating = true
     
     private let dialogues = [
         "오랜만이야.",
         "너의 실패들은 잘 봤다.",
-        "특히 ~는 인상적이군.",
+        "는 인상적이군.",
         "그래서 목표했던 일은 이뤘나? 아직 아니라고? 괜찮아.",
         "실패에서 배우는 교훈이 때로는 성공보다 값지다는 걸 넌 이미 알고 있을 거야.",
         "이번 실패에서 얻은 교훈은 다음 도전의 밑거름이 될 것이다.",
@@ -30,61 +30,56 @@ struct ResultView: View {
     ]
     
     var body: some View {
-        ZStack {
-            Color(.white)
-                .edgesIgnoringSafeArea(.all)
+        VStack {
+            Spacer()
             
-            VStack {
+            HStack {
                 Spacer()
-                
-                HStack {
-                    Spacer()
-                    Image("GaeSae")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 200, height: 200)
-                        .offset(y: isAnimating ? 0 : 10)
-                        .animation(
-                            Animation.easeInOut(duration: 0.2)
-                                .repeatCount(8, autoreverses: false),
-                            value: isAnimating
-                        )
-                }
-                .padding(.horizontal, 30)
-                
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(Color(UIColor.secondarySystemBackground))
-                        .shadow(radius: 5)
-                    
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("개새")
-                            .font(.title.bold())
-                            .padding(.bottom, 5)
-                        
-                        Text(dialogues[currentDialogueIndex])
-                            .font(.body)
-                            .lineSpacing(5)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .lineLimit(nil)
-                        
-                        Spacer()
-                        
-                        HStack {
-                            Spacer()
-                            Text("터치하여 계속")
-                                .font(.caption)
-                                .foregroundColor(.gray)
-                                .opacity(0.8)
-                        }
-                    }
-                    .padding(24)
-                }
-                .frame(maxHeight: 220)
-                .padding(.horizontal)
-                
-                Spacer()
+                Image("GaeSae")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 200, height: 200)
+                    .offset(y: isAnimating ? 0 : 10)
+                    .animation(
+                        Animation.easeInOut(duration: 0.2)
+                            .repeatCount(8, autoreverses: false),
+                        value: isAnimating
+                    )
             }
+            .padding(.horizontal, 30)
+            
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color(UIColor.secondarySystemBackground))
+                    .shadow(radius: 5)
+                
+                VStack(alignment: .leading, spacing: 20) {
+                    Text("개새")
+                        .font(.title.bold())
+                        .padding(.bottom, 5)
+                    
+                    Text((currentDialogueIndex == 2 ? "특히 \"\(dogBirds[Int.random(in: 0..<dogBirds.count)].failureNote)\"" : "") + dialogues[currentDialogueIndex])
+                        .font(.body)
+                        .lineSpacing(5)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(nil)
+                    
+                    Spacer()
+                    
+                    HStack {
+                        Spacer()
+                        Text("터치하여 계속")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                            .opacity(0.8)
+                    }
+                }
+                .padding(24)
+            }
+            .frame(maxHeight: 220)
+            .padding(.horizontal)
+            
+            Spacer()
         }
         .onAppear() {
             isAnimating = true
@@ -108,7 +103,6 @@ struct ResultView: View {
             }
         } else {
             currentGoal = ""
-            // dogBird들의 isFlyaway 속성을 모두 true로 변환
             for dogBird in dogBirds {
                 dogBird.isFlyAway = true
                 try? modelContext.save()

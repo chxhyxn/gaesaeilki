@@ -13,7 +13,6 @@ struct PopupNoteDetailView: View {
     @State private var editedNote: String
     @State private var isEditing: Bool = false
     
-    // 추가 - 당시 목표 및 생성 일자 표시를 위한 속성
     var goalAtCreation: String
     var createdAt: Date
         
@@ -29,9 +28,7 @@ struct PopupNoteDetailView: View {
     
     var body: some View {
         ZStack {
-            // Glassmorphism popup card
             VStack(alignment: .leading, spacing: 10) {
-                // Header
                 HStack() {
                     Text("실패 일기")
                         .font(.headline)
@@ -39,7 +36,6 @@ struct PopupNoteDetailView: View {
                     
                     Spacer()
                     
-                    // 손잡이
                     RoundedRectangle(cornerRadius: 2)
                         .fill(Color.secondary.opacity(0.4))
                         .frame(width: 40, height: 5)
@@ -91,7 +87,6 @@ struct PopupNoteDetailView: View {
                 Divider()
                     .background(Color.white.opacity(0.7))
                 
-                // 당시 목표 표시 (비어있지 않을 경우에만)
                 if !goalAtCreation.isEmpty {
                     Text("당시 목표 : \(goalAtCreation)")
                         .font(.subheadline)
@@ -104,13 +99,11 @@ struct PopupNoteDetailView: View {
                         .padding(.horizontal)
                 }
                 
-                // 날짜 포맷터
                 Text("생성 일자 : \(createdAt.formatted)")
                     .font(.subheadline)
                     .foregroundColor(.primary)
                     .padding(.horizontal)
                 
-                // Content
                 if isEditing {
                     ZStack {
                         RoundedRectangle(cornerRadius: 8)
@@ -123,7 +116,7 @@ struct PopupNoteDetailView: View {
                         TextEditor(text: $editedNote)
                             .padding(.vertical, 8)
                             .padding(.horizontal, 11)
-                            .scrollContentBackground(.hidden) // iOS 16+ 옵션
+                            .scrollContentBackground(.hidden)
                             .background(Color.clear)
                     }
                     .frame(minHeight: 100, maxHeight: 200)
