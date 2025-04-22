@@ -105,7 +105,7 @@ struct PopupNoteDetailView: View {
                 }
                 
                 // 날짜 포맷터
-                Text("생성 일자 : \(formattedDate(createdAt))")
+                Text("생성 일자 : \(createdAt.formatted)")
                     .font(.subheadline)
                     .foregroundColor(.primary)
                     .padding(.horizontal)
@@ -168,13 +168,6 @@ struct PopupNoteDetailView: View {
             )
         }
         .animation(.default, value: isEditing)
-    }
-    
-    // 날짜 포맷 함수
-    private func formattedDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm"
-        return formatter.string(from: date)
     }
     
     private func commitChanges() {

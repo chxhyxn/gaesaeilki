@@ -28,7 +28,7 @@ struct DogBirdDetailView: View {
                         .frame(width: 60, height: 60)
                     
                     VStack(alignment: .leading) {
-                        Text(formattedDate)
+                        Text(dogBird.createdAt.formatted)
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                         
@@ -137,13 +137,5 @@ struct DogBirdDetailView: View {
         } catch {
             print("Error deleting item: \(error.localizedDescription)")
         }
-    }
-    
-    private var formattedDate: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .short
-        formatter.locale = Locale(identifier: "ko_KR")
-        return formatter.string(from: dogBird.createdAt)
     }
 }

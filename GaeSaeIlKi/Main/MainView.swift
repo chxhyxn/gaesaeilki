@@ -257,6 +257,47 @@ struct MainView: View {
             // UI
             VStack {
                 // MARK: 상단 UI
+                // TODO: dogBirds가 20마리일때 100%인 프로그래스 뷰. 다른 UI를 참고해 배경에는 글래스모피즘 디자인을 적용한다.
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        // 배경 (Glass morphism)
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(.ultraThinMaterial)
+                            .frame(width: geometry.size.width - 40, height: 24)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                            )
+                            .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
+                        
+                        // 진행바
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [Color.blue.opacity(0.7), Color.purple.opacity(0.7)]),
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .frame(
+                                width: max(12, (geometry.size.width - 40) * (CGFloat(dogBirds.count) / 20.0)),
+                                height: 24
+                            )
+                        
+                        // 텍스트
+                        HStack {
+                            Spacer()
+                            Text("\(dogBirds.count)/20 개새")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(.white)
+                                .shadow(radius: 1)
+                            Spacer()
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+                .frame(width: UIScreen.main.bounds.width, height: 24)
+                
                 HStack {
                     Spacer()
                     // MARK: 음성감지 on/off 버튼(마이크 심볼)

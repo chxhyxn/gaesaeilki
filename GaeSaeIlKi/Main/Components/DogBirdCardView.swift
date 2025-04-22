@@ -31,7 +31,7 @@ struct DogBirdCardView: View {
                             .foregroundColor(.secondary.opacity(0.8))
                             .lineLimit(1)
                     }
-                    Text(formattedDate)
+                    Text(dogBird.createdAt.formatted)
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -43,13 +43,5 @@ struct DogBirdCardView: View {
         }
         .padding(.vertical)
         .buttonStyle(PlainButtonStyle())
-    }
-    
-    private var formattedDate: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        formatter.locale = Locale(identifier: "ko_KR")
-        return formatter.string(from: dogBird.createdAt)
     }
 }
