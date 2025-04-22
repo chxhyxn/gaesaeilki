@@ -27,8 +27,7 @@ class SoundManager: ObservableObject {
         let audioSession = AVAudioSession.sharedInstance()
         
         do {
-            print("오디오 권한 요청 중...")
-            try audioSession.requestRecordPermission { granted in
+            AVAudioApplication.requestRecordPermission { granted in
                 if granted {
                     print("마이크 권한 승인됨")
                 } else {
