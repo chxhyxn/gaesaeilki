@@ -25,7 +25,7 @@ struct OnboardingView: View {
     
     var body: some View {
         ZStack {
-            Color(UIColor.systemBackground)
+            Color(.white)
                 .edgesIgnoringSafeArea(.all)
             
             VStack {
@@ -53,6 +53,8 @@ struct OnboardingView: View {
                         Text(dialogues[currentDialogueIndex])
                             .font(.body)
                             .lineSpacing(5)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .lineLimit(nil)
                         
                         Spacer()
                         
@@ -66,7 +68,7 @@ struct OnboardingView: View {
                     }
                     .padding(24)
                 }
-                .frame(height: 200)
+                .frame(maxHeight: 220)
                 .padding(.horizontal)
                 
                 Spacer()
