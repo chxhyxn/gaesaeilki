@@ -16,10 +16,10 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		B9451A0A2DA5F1060093F721 /* Exceptions for "GaeSaeIlKi" folder in "GaeSaeIlKi" target */ = {
+		B9A91D722DB7BED5005DBBDE /* Exceptions for "GaeSaeIlKi" folder in "GaeSaeIlKi" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Sources/App/Info.plist,
 			);
 			target = B94519652DA5ED5E0093F721 /* GaeSaeIlKi */;
 		};
@@ -29,7 +29,7 @@
 		B94519FD2DA5F1050093F721 /* GaeSaeIlKi */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				B9451A0A2DA5F1060093F721 /* Exceptions for "GaeSaeIlKi" folder in "GaeSaeIlKi" target */,
+				B9A91D722DB7BED5005DBBDE /* Exceptions for "GaeSaeIlKi" folder in "GaeSaeIlKi" target */,
 			);
 			path = GaeSaeIlKi;
 			sourceTree = "<group>";
@@ -282,7 +282,7 @@
 				DEVELOPMENT_TEAM = TXFPK3WSCH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = GaeSaeIlKi/Info.plist;
+				INFOPLIST_FILE = GaeSaeIlKi/Sources/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "개새일기";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "큰 소리를 감지해 개새를 놀래킬 수 있어요!";
@@ -320,7 +320,7 @@
 				DEVELOPMENT_TEAM = TXFPK3WSCH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = GaeSaeIlKi/Info.plist;
+				INFOPLIST_FILE = GaeSaeIlKi/Sources/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "개새일기";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "큰 소리를 감지해 개새를 놀래킬 수 있어요!";
