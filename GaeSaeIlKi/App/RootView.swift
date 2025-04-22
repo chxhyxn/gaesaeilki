@@ -9,18 +9,19 @@ import SwiftUI
 import SwiftData
 
 struct RootView: View {
-    @Environment(AppState.self) var appState
-    
+    @AppStorage("currentScreen") var currentScreen: ViewScreen = .onboarding
+
     var body: some View {
         VStack {
-            switch appState.currentScreen {
+            switch currentScreen {
             case .onboarding:
                 OnboardingView()
             case .setGoal:
                 SetGoalView()
+            case .showResult:
+                ResultView()
             case .main:
                 MainView()
-                    .modelContainer(for: [DogBird.self])
             }
         }
         .preferredColorScheme(.light)

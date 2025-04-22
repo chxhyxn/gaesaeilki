@@ -10,7 +10,7 @@ import SwiftUI
 struct DogBirdDetailView: View {
     let dogBird: DogBird
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var context
+    @Environment(\.modelContext) private var modelContext
     @State private var isEditing = false
     @State private var editedNote = ""
     @State private var showingDeleteAlert = false
@@ -120,7 +120,7 @@ struct DogBirdDetailView: View {
         dogBird.failureNote = editedNote
         
         do {
-            try context.save()
+            try modelContext.save()
             isEditing = false
             textFieldFocused = false
         } catch {
@@ -129,10 +129,10 @@ struct DogBirdDetailView: View {
     }
     
     private func deleteItem() {
-        context.delete(dogBird)
+        modelContext.delete(dogBird)
         
         do {
-            try context.save()
+            try modelContext.save()
             dismiss()
         } catch {
             print("Error deleting item: \(error.localizedDescription)")

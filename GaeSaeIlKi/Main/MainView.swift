@@ -11,13 +11,17 @@ import StoreKit
 import SDWebImageSwiftUI
 
 struct MainView: View {
-    @Environment(\.modelContext) private var context
+    @Environment(\.modelContext) private var modelContext
     
     @Query(filter: #Predicate<DogBird> { !$0.isFlyAway }) private var dogBirds: [DogBird]
     
     @State private var fieldSize: CGSize = .zero
+    
     @AppStorage("currentGoal") var currentGoal: String = ""
+    @AppStorage("currentScreen") var currentScreen: ViewScreen = .onboarding
+    
     @State private var totalGaeSae: Int = UserDefaults.standard.integer(forKey: "totalGaeSae")
+    
     @State private var failureNote: String = ""
     
     // 쓰레기통 관련 상태
@@ -50,6 +54,9 @@ struct MainView: View {
     
     // 배경 넘버
     @State private var bgNum: Int = 0
+    
+    // 하얀 레이어 높이
+    @State private var factorWhiteLayersHeight: CGFloat = 1
     
     let timer = Timer.publish(every: 0.03, on: .main, in: .common).autoconnect()
     
@@ -197,7 +204,7 @@ struct MainView: View {
                                     // 쓰레기통 위에서 드롭되었으면 삭제
                                     if distance < 45 {
                                         withAnimation {
-                                            context.delete(dogBird)
+                                            modelContext.delete(dogBird)
                                         }
                                     }
                                     
@@ -407,7 +414,6 @@ struct MainView: View {
                                     .focused($isBottomTextFieldFocused)
                                     .onSubmit {
                                         if !failureNote.isEmpty {
-                                            UserDefaults.standard.set(currentGoal, forKey: "currentGoal")
                                             addDogBird()
                                             isBottomTextFieldFocused = false
                                         }
@@ -415,7 +421,6 @@ struct MainView: View {
                                 
                                 VStack {
                                     Button(action: {
-                                        UserDefaults.standard.set(currentGoal, forKey: "currentGoal")
                                         addDogBird()
                                         isBottomTextFieldFocused = false
                                     }) {
@@ -449,6 +454,15 @@ struct MainView: View {
                     .transition(.move(edge: .bottom))
                 }
             }
+            
+            // MARK: 하얀 레이어
+            Color.white
+                .ignoresSafeArea(.all)
+                .frame(width: UIScreen.main.bounds.width,
+                       height: UIScreen.main.bounds.height * factorWhiteLayersHeight)
+        }
+        .onAppear() {
+            HideWhiteLayer()
         }
         .animation(.default, value: failureNote.isEmpty)
         .animation(.default, value: isBottomTextFieldFocused)
@@ -512,7 +526,7 @@ struct MainView: View {
             goalAtCreation: currentGoal
         )
         
-        context.insert(newDogBird)
+        modelContext.insert(newDogBird)
         failureNote = ""
         
         // 새로 생성된 DogBird에 표시하기
@@ -533,6 +547,10 @@ struct MainView: View {
             if #available(iOS 10.3, *) {
                 SKStoreReviewController.requestReview()
             }
+        }
+        
+        if dogBirds.count > 18 {
+            showWhiteLayerAndResult()
         }
     }
     
@@ -634,6 +652,20 @@ struct MainView: View {
                 // 코사인 값으로 이동 방향 결정 (cos > 0이면 오른쪽으로 이동 중)
                 dogBird.movingRight = cos(angle) > 0
             }
+        }
+    }
+    
+    private func showWhiteLayerAndResult() {
+        withAnimation(.easeIn(duration: 2.0)) {
+            factorWhiteLayersHeight = 1
+        } completion: {
+            currentScreen = .showResult
+        }
+    }
+    
+    private func HideWhiteLayer() {
+        withAnimation(.easeOut(duration: 2.0)) {
+            factorWhiteLayersHeight = 0
         }
     }
 }

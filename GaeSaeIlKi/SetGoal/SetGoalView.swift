@@ -8,10 +8,8 @@
 import SwiftUI
 
 struct SetGoalView: View {
-    @Environment(AppState.self) var appState
-    
+    @AppStorage("currentScreen") var currentScreen: ViewScreen = .onboarding
     @AppStorage("currentGoal") var currentGoal: String = ""
-    @AppStorage("hasNoGoal") var hasNoGoal: Bool = true
 
     @State private var currentDialogueIndex = 0
     @State private var showConfirmationAlert = false
@@ -132,14 +130,11 @@ struct SetGoalView: View {
         }
     }
     
-    // Function to handle user taps
     private func handleTap() {
-        // If not at the last dialogue, move to next
         if currentDialogueIndex < dialogues.count - 1 {
             currentDialogueIndex += 1
         } else {
-            appState.currentScreen = .main
-            hasNoGoal = false
+            currentScreen = .main
         }
     }
 }

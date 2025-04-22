@@ -11,11 +11,6 @@ import SDWebImageWebPCoder
 
 @main
 struct GaeSaeIlKiApp: App {
-    @AppStorage("isFirstLaunch") var isFirstLaunch: Bool = true
-    @AppStorage("hasNoGoal") var hasNoGoal: Bool = true
-    
-    @State private var appState = AppState()
-
     init() {
         let WebPCoder = SDImageWebPCoder.shared
         SDImageCodersManager.shared.addCoder(WebPCoder)
@@ -24,17 +19,7 @@ struct GaeSaeIlKiApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
-                .environment(appState)
-                .onAppear() {
-                    if isFirstLaunch {
-                        appState.currentScreen = .onboarding
-                    } else if hasNoGoal {
-                        appState.currentScreen = .setGoal
-                        isFirstLaunch = false
-                    } else {
-                        appState.currentScreen = .main
-                    }
-                }
+                .modelContainer(for: [DogBird.self])
         }
     }
 }

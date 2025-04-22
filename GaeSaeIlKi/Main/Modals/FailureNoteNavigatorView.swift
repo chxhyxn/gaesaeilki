@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct FailureNoteNavigatorView: View {
-    @Environment(\.modelContext) private var context
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \DogBird.createdAt, order: .reverse) private var dogBirds: [DogBird]
     
@@ -39,11 +39,11 @@ struct FailureNoteNavigatorView: View {
     
     private func deleteItems(at offsets: IndexSet) {
         for index in offsets {
-            context.delete(dogBirds[index])
+            modelContext.delete(dogBirds[index])
         }
         
         do {
-            try context.save()
+            try modelContext.save()
         } catch {
             print("Error deleting items: \(error.localizedDescription)")
         }
