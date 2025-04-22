@@ -8,24 +8,29 @@ struct FailureNoteNavigatorView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(dogBirds) { dogBird in
-                    NavigationLink(destination: DogBirdDetailView(dogBird: dogBird)) {
-                        DogBirdCardView(dogBird: dogBird)
+            if dogBirds.isEmpty {
+                Text("아직 개새일기가 없습니다.")
+                    .font(.title2)
+            } else {
+                List {
+                    ForEach(dogBirds) { dogBird in
+                        NavigationLink(destination: DogBirdDetailView(dogBird: dogBird)) {
+                            DogBirdCardView(dogBird: dogBird)
+                        }
                     }
+                    .onDelete(perform: deleteItems)
                 }
-                .onDelete(perform: deleteItems)
-            }
-            .listStyle(.plain)
-            .navigationTitle("개새일기")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.gray)
+                .listStyle(.plain)
+                .navigationTitle("개새일기")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.gray)
+                        }
                     }
                 }
             }
