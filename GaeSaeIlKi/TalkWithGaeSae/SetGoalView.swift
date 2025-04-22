@@ -13,6 +13,7 @@ struct SetGoalView: View {
 
     @State private var currentDialogueIndex = 0
     @State private var showConfirmationAlert = false
+    @State private var isAnimating = true
     
     @FocusState private var isTextFieldFocused: Bool
     
@@ -39,6 +40,12 @@ struct SetGoalView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 200, height: 200)
+                        .offset(y: isAnimating ? 0 : 10)
+                        .animation(
+                            Animation.easeInOut(duration: 0.2)
+                                .repeatCount(8, autoreverses: false),
+                            value: isAnimating
+                        )
                 }
                 .padding(.horizontal, 30)
                 
@@ -115,6 +122,12 @@ struct SetGoalView: View {
                 Spacer()
             }
         }
+        .onAppear() {
+            isAnimating = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                isAnimating = false
+            }
+        }
         .onTapGesture {
             if currentDialogueIndex != 1 {
                 handleTap()
@@ -132,7 +145,13 @@ struct SetGoalView: View {
     
     private func handleTap() {
         if currentDialogueIndex < dialogues.count - 1 {
-            currentDialogueIndex += 1
+            isAnimating = true
+            withAnimation {
+                currentDialogueIndex += 1
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                isAnimating = false
+            }
         } else {
             currentScreen = .main
         }
