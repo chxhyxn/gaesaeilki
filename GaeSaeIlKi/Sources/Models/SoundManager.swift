@@ -8,12 +8,13 @@
 import SwiftUI
 import AVFoundation
 
-class SoundManager: ObservableObject {
+@Observable
+class SoundManager {
     private var audioRecorder: AVAudioRecorder?
     private var timer: Timer?
     
-    @Published var soundLevel: Float = 0.0
-    @Published var isMonitoring: Bool = false
+    var soundLevel: Float = 0.0
+    var isMonitoring: Bool = false
     
     init() {
         setupAudioRecorder()

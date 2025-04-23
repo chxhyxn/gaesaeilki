@@ -19,7 +19,7 @@ struct MainView: View {
     @AppStorage("currentGoal") var currentGoal: String = ""
     @AppStorage("currentScreen") var currentScreen: ViewScreen = .onboarding
     
-    @StateObject var soundManager = SoundManager()
+    @State private var soundManager = SoundManager()
     
     @State private var fieldSize: CGSize = .zero
     @State private var totalGaeSae: Int = UserDefaults.standard.integer(forKey: "totalGaeSae")
