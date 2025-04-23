@@ -605,7 +605,8 @@ struct MainView: View {
     private func showWhiteLayerAndResult() {
         withAnimation(.easeIn(duration: 2.0)) {
             factorWhiteLayersHeight = 1
-        } completion: {
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             currentScreen = .showResult
         }
     }
